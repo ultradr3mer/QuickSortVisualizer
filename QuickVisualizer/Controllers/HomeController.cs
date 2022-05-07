@@ -18,11 +18,13 @@ namespace QuickVisualizer.Controllers
             return View();
         }
 
+        [HttpGet(nameof(Privacy))]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [HttpGet(nameof(Error))]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

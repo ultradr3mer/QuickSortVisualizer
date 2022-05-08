@@ -1,10 +1,9 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using QuickVisualizer.Models;
 
 namespace QuickVisualizer.Controllers;
 
-[ApiController]
-[Route("Api/[controller]")]
 public class SortStepsController : Controller
 {
     private readonly ILogger<SortStepsController> _logger;
@@ -15,8 +14,12 @@ public class SortStepsController : Controller
     }
 
     [HttpGet]
-    public IActionResult SplitSteps(int[] array)
+    public IActionResult Index()
     {
-        return Ok("bnis");
+        int[] arr = new int[] { 2, 5, -4, 11, 0, 18, 22, 67, 51, 6 };
+
+        var solution = QuickSortSolver.QuickSort(arr);
+
+        return View(solution);
     }
 }

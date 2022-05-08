@@ -8,22 +8,18 @@ namespace QuickVisualizer.Data
         public List<QuickSortSolutionStep> Steps { get; set; } = new List<QuickSortSolutionStep>();
     }
 
-    [DataContract]
     public class QuickSortSolutionStep
     {
-        public QuickSortSolutionStep(int[] arr, int? pivot = null)
+        public QuickSortSolutionStep(int[] arr, int? pivotIndex = null)
         {
             Arr = arr;
-            Pivot = pivot;
-            Json = JsonConvert.SerializeObject(this);
+            PivotIndex = pivotIndex;
         }
 
-        [DataMember(Name = "A")]
-        public int[] Arr { get; }
+        public int[] Arr { get; set; }
 
-        [DataMember(Name = "P")]
-        public int? Pivot { get; }
+        public int? PivotIndex { get; set; }
 
-        public string Json { get; }
+        public SwitchData Switch { get; set; }
     }
 }

@@ -4,66 +4,102 @@ namespace QuickVisualizer.Models
 {
     public class QuickSortSolver
     {
-        public static QuickSortSolution QuickSort(int[] arr)
+        public static QuickSortSolution QuickSort(int[] arr, bool showSwitches)
         {
             var solution = new QuickSortSolution();
 
-            QuickSortSolver.QuickSort(arr, 0, arr.Length - 1, solution);
+            QuickSortSolver.QuickSort(arr, showSwitches, 0, arr.Length - 1, solution);
 
-            solution.Steps.Add(new QuickSortSolutionStep(arr));
+            solution.Steps.Add(new QuickSortSolutionStep(arr.ToArray()));
 
             return solution;
         }
 
-        public static void QuickSort(int[] arr, int left, int right, QuickSortSolution quickSortSolution)
+        public static void QuickSort(int[] arr, bool showSwitches, int left, int right, QuickSortSolution solution)
         {
-            quickSortSolution.Steps.Add(new QuickSortSolutionStep(arr));
-
             if (left < right)
             {
-                int pivot = Partition(arr, left, right);
+                int newPivotIndex = Partition(arr, showSwitches, left, right, solution);
 
-                quickSortSolution.Steps.Add(new QuickSortSolutionStep(arr, pivot));
-
-                if (pivot > 1)
+                if (newPivotIndex > 1)
                 {
-                    QuickSort(arr, left, pivot - 1, quickSortSolution);
+                    QuickSort(arr, showSwitches, left, newPivotIndex - 1, solution);
                 }
-                if (pivot + 1 < right)
+                if (newPivotIndex + 1 < right)
                 {
-                    QuickSort(arr, pivot + 1, right, quickSortSolution);
+                    QuickSort(arr, showSwitches, newPivotIndex + 1, right, solution);
                 }
             }
         }
 
-        private static int Partition(int[] arr, int left, int right)
+        private static int Partition(int[] arr, bool showSwitches, int left, int right, QuickSortSolution solution)
         {
-            int pivot = arr[left];
+            int pivotIndex = right;
+            int pivot = arr[pivotIndex];
+
+            var stepStart = new QuickSortSolutionStep(arr.ToArray(), pivotIndex);
+            solution.Steps.Add(stepStart);
+
             while (true)
             {
-                while (arr[left] < pivot)
+                bool leftFound = false;
+                for (int i = left; i < right; i++)
                 {
-                    left++;
+                    left = i;
+                    if (i != pivotIndex && arr[i] > pivot)
+                    {
+                        leftFound = true;
+                        break;
+                    }
                 }
 
-                while (arr[right] > pivot)
+                bool rightFound = false;
+                for (int i = right; i > left; i--)
                 {
-                    right--;
+                    right = i;
+                    if (i != pivotIndex && arr[i] < pivot)
+                    {
+                        rightFound = true;
+                        break;
+                    }
                 }
 
-                if (left < right)
+                if (!rightFound || !leftFound)
                 {
-                    if (arr[left] == arr[right]) return right;
-
-                    int temp = arr[left];
-                    arr[left] = arr[right];
-                    arr[right] = temp;
+                    break;
                 }
-                else
+
+                int temp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = temp;
+
+                if (showSwitches)
                 {
-                    return right;
+                    var step = new QuickSortSolutionStep(arr.ToArray(), pivotIndex);
+                    step.Switch = new SwitchData(left, right);
+                    solution.Steps.Add(step);
                 }
             }
+
+            int target = arr[left] > pivot ? left : right;
+            if(target == pivotIndex)
+            {
+                return pivotIndex;
+            }
+
+            arr[pivotIndex] = arr[target];
+            arr[target] = pivot;
+
+            if (showSwitches)
+            {
+                var pivotStep = new QuickSortSolutionStep(arr.ToArray(), target);
+                pivotStep.Switch = new SwitchData(target, pivotIndex);
+                solution.Steps.Add(pivotStep);
+            }
+
+            pivotIndex = target;
+
+            return pivotIndex;
         }
     }
 }

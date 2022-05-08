@@ -1,24 +1,46 @@
-﻿@{
+﻿@using Newtonsoft.Json
+@{
     ViewData["Title"] = "Sorting Steps";
 }
-
+@model QuickVisualizer.Data.SortingStepsData
 <main class="bg-dark pb-4">
     <div class="container">
         <div class="row">
-            <div class="column">
+            <div class="column col-sm-12 col-md-6 mb-3">
                 <div class="text-center">
-                    <h1 class="display-4">Die sortierschritte</h1>
-                    <p>Quicksort</a>.</p>
+                    <h1 class="display-4">Quicksort</h1>
+                    <p>Die Sortierschritte</p>
                 </div>
+            </div>
+            <div class="column col-sm-12 col-md-6 mb-3">
+                <h1 class="display-4">Sortierparameter</h1>
+                @using (Html.BeginForm(FormMethod.Post))
+                {
+                    <div class="form-group">
+                        <label for="Values">Values</label>
+                        @Html.TextBox("Values", Model.Values,  new { id = "Values", @class = "form-control"} )
+                        <small id="valuesHelp" class="form-text text-muted">Please enter Values comma seperated.</small>
+                    </div>
+                    <div class="form-check">
+                        @Html.CheckBox("ShowSwitches", Model.ShowSwitches, new { id = "ShowSwitches", @class = "form-check-input"} )
+                        <label class="form-check-label" for="ShowSwitches">Show switches</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                }
             </div>
         </div>
-        @foreach (var item in Model.Steps)
+        @if (Model.ToString != null)
         {
-            <div class="row">
-                <div class="column">
-                    <img src="~/sortsteps/stepimg/@item.Json" />
+            @foreach (var item in Model.Solution.Steps)
+            {
+                <div class="row">
+                    <div class="column col-sm-12">
+                        <div class="text-center">
+                            <img src="~/sortsteps/stepimg/@JsonConvert.SerializeObject(item)" class="step-img" />
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         }
     </div>
 </main>

@@ -12,6 +12,14 @@
                 </div>
             </div>
         </div>
+        @foreach (var item in Model.Steps)
+        {
+            <div class="row">
+                <div class="column">
+                    <img src="~/sortsteps/stepimg/@item.Json" />
+                </div>
+            </div>
+        }
     </div>
 </main>
 

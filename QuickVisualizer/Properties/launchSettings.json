@@ -11,7 +11,7 @@
     "QuickVisualizer": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "home",
+      "launchUrl": "sortsteps",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

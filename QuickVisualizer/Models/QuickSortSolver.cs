@@ -23,7 +23,7 @@ namespace QuickVisualizer.Models
             {
                 int pivot = Partition(arr, left, right);
 
-                quickSortSolution.Steps.Add(new QuickSortSolutionStep(arr));
+                quickSortSolution.Steps.Add(new QuickSortSolutionStep(arr, pivot));
 
                 if (pivot > 1)
                 {
@@ -41,7 +41,6 @@ namespace QuickVisualizer.Models
             int pivot = arr[left];
             while (true)
             {
-
                 while (arr[left] < pivot)
                 {
                     left++;

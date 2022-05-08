@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace QuickVisualizer.Controllers
 {
+    [Route("[controller]")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

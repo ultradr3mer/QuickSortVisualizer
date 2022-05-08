@@ -8,33 +8,34 @@
 @import "functions";
 @import "variables";
 
+$secondary: #9d9d9d;
+$light: #cdd4d8;
+$medium: #b2b6bb;
+$dark: #a4a9ad;
+
 $theme-colors: (
-  "primary": #e91e63,
-  "secondary": #9d9d9d,
-  "light": #343a40,
-  "medium": #252b30,
-  "dark": #171c21
+    "primary": #e91e63,
+    "secondary": #9d9d9d,
+    "light": #cdd4d8,
+    "medium": #b2b6bb,
+    "dark": #a4a9ad,
 );
 
-$primary: #e91e63;
-$secondary: #9d9d9d;
-$light: #343a40;
-$medium: #252b30;
-$dark: #171c21;
-
 $body-bg: $light;
-$body-color: #e6e6e6;
+$body-color: #111;
+$color: $body-color !important;
 
 $navbar-dark-color: $body-color;
 $navbar-dark-hover-color: rgba($white, .5);
 
-$link-color: #1e80e9;
+$link-color: #0060c8;
 
 $navbar-dark-toggler-border-color: #fff;
 
-$navbar-dark-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'><path stroke='#fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+$navbar-dark-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'><path stroke='#111' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
 
 $btn-border-radius: 0rem;
+
 
 @import "mixins";
 @import "root";
@@ -71,3 +72,7 @@ $btn-border-radius: 0rem;
 @import "spinners";
 @import "utilities";
 @import "print";
+
+.text-dark {
+  color: #111 !important;
+}

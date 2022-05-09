@@ -22,7 +22,7 @@ namespace QuickVisualizer.Models
 
         internal static byte[] Render(QuickSortSolutionStep step)
         {
-            if(step.Arr.Length == 0)
+            if (step.Arr.Length == 0)
             {
                 return new byte[] { };
             }
@@ -36,57 +36,94 @@ namespace QuickVisualizer.Models
             var squareBrush = new SolidBrush(ColorTranslator.FromHtml("#76797C"));
             var pivotBrush = new SolidBrush(ColorTranslator.FromHtml("#0A92FE"));
             var backColor = ColorTranslator.FromHtml("#A4A9AD");
+            var disabledBrush = new SolidBrush(ColorTranslator.FromHtml("#55A4A9AD"));
 
-            using (var bmp = new Bitmap(width, height))
+            using (var bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb))
             using (var g = Graphics.FromImage(bmp))
             {
+                g.Clear(backColor);
+
+
+                g.SmoothingMode = SmoothingMode.HighQuality;
                 g.CompositingQuality = CompositingQuality.HighSpeed;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                g.Clear(backColor);
 
                 var len = step.Arr.Length;
                 for (int i = 0; i < len; i++)
-                { 
+                {
                     var item = step.Arr[i];
-                    
-                    var rect = new Rectangle(blockSize * i, 0, blockSize, blockSize);
+
+                    var rect = new RectangleF(blockSize * i, 0, blockSize, blockSize);
                     var format = new StringFormat();
                     format.Alignment = StringAlignment.Center;
                     format.LineAlignment = StringAlignment.Center;
 
                     var backRect = rect;
-                    backRect.Inflate(-3, -3);
+                    backRect.Inflate(-1.5f, -1.5f);
+                    var rounded = GetRoundedRect(backRect, 6.0f);
 
-                    g.FillRectangle(i == step.PivotIndex ? pivotBrush : squareBrush, backRect);
+                    g.FillPath(i == step.PivotIndex ? pivotBrush : squareBrush, rounded);
                     g.DrawString(item.ToString(), font, fontBrush, rect, format);
                 }
 
                 if (step.Switch != null)
                 {
-                    using (Pen p = new Pen(Color.Black,2))
-                    using (GraphicsPath capPath = new GraphicsPath())
+                    using (Pen p = new Pen(Color.Black, 2.0f))
+                    using (AdjustableArrowCap cap = new AdjustableArrowCap(5,5))
                     {
-                        int capsize = 5;
+                        p.CustomEndCap = cap;
+                        p.CustomStartCap = cap;
 
-                        // A triangle
-                        capPath.AddLine(-capsize, 0, capsize, 0);
-                        capPath.AddLine(-capsize, 0, 0, capsize);
-                        capPath.AddLine(0, capsize, capsize, 0);
-
-                        p.CustomEndCap = new System.Drawing.Drawing2D.CustomLineCap(null, capPath);
-                        p.CustomStartCap = new System.Drawing.Drawing2D.CustomLineCap(null, capPath);
-
-                        g.DrawLine(p, blockSize * ((float)step.Switch.Left + 0.5f), height - 10, blockSize * ((float)step.Switch.Right + 0.5f), height-10);
+                        g.DrawLine(p, blockSize * ((float)step.Switch.Left + 0.5f) + 10, height - 10.5f, blockSize * ((float)step.Switch.Right + 0.5f) - 10, height - 10.5f);
                     }
                 }
 
+                for (int i = 0; i < len; i++)
+                {
+                    if (i >= step.Left && i <= step.Right)
+                    {
+                        continue;
+                    }
 
-                    //bmp.MakeTransparent(Color.Pink);
+                    var item = step.Arr[i];
+                    var rect = new Rectangle(blockSize * i, 0, blockSize, blockSize);
+                    g.FillRectangle(disabledBrush, rect);
+                }
+
                 byte[] byteArray = ToByteArray(bmp, ImageFormat.Png);
 
                 return byteArray;
             }
+        }
+
+        private static GraphicsPath GetRoundedRect(RectangleF baseRect,
+            float radius)
+        {
+            // create the arc for the rectangle sides and declare 
+            // a graphics path object for the drawing 
+            float diameter = radius * 2.0F;
+            SizeF sizeF = new SizeF(diameter, diameter);
+            RectangleF arc = new RectangleF(baseRect.Location, sizeF);
+            GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+
+            // top left arc 
+            path.AddArc(arc, 180, 90);
+
+            // top right arc 
+            arc.X = baseRect.Right - diameter;
+            path.AddArc(arc, 270, 90);
+
+            // bottom right arc 
+            arc.Y = baseRect.Bottom - diameter;
+            path.AddArc(arc, 0, 90);
+
+            // bottom left arc
+            arc.X = baseRect.Left;
+            path.AddArc(arc, 90, 90);
+
+            path.CloseFigure();
+            return path;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace QuickVisualizer.Models
 
             QuickSortSolver.QuickSort(arr, showSwitches, 0, arr.Length - 1, solution);
 
-            solution.Steps.Add(new QuickSortSolutionStep(arr.ToArray()));
+            solution.Steps.Add(new QuickSortSolutionStep(arr.ToArray(), 0, arr.Length - 1));
 
             return solution;
         }
@@ -37,7 +37,10 @@ namespace QuickVisualizer.Models
             int pivotIndex = right;
             int pivot = arr[pivotIndex];
 
-            var stepStart = new QuickSortSolutionStep(arr.ToArray(), pivotIndex);
+            int originalLeft = left;
+            int originalRight = right;
+
+            var stepStart = new QuickSortSolutionStep(arr.ToArray(), originalLeft, originalRight, pivotIndex);
             solution.Steps.Add(stepStart);
 
             while (true)
@@ -75,14 +78,14 @@ namespace QuickVisualizer.Models
 
                 if (showSwitches)
                 {
-                    var step = new QuickSortSolutionStep(arr.ToArray(), pivotIndex);
+                    var step = new QuickSortSolutionStep(arr.ToArray(), originalLeft, originalRight, pivotIndex);
                     step.Switch = new SwitchData(left, right);
                     solution.Steps.Add(step);
                 }
             }
 
             int target = arr[left] > pivot ? left : right;
-            if(target == pivotIndex)
+            if (target == pivotIndex)
             {
                 return pivotIndex;
             }
@@ -90,12 +93,9 @@ namespace QuickVisualizer.Models
             arr[pivotIndex] = arr[target];
             arr[target] = pivot;
 
-            if (showSwitches)
-            {
-                var pivotStep = new QuickSortSolutionStep(arr.ToArray(), target);
-                pivotStep.Switch = new SwitchData(target, pivotIndex);
-                solution.Steps.Add(pivotStep);
-            }
+            var pivotStep = new QuickSortSolutionStep(arr.ToArray(), originalLeft, originalRight, target);
+            pivotStep.Switch = new SwitchData(target, pivotIndex);
+            solution.Steps.Add(pivotStep);
 
             pivotIndex = target;
 
